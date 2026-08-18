@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Underwood Calm Fishing 🎣🥤</title>
+    <title>Calm Drink - Fishing Game 🎣</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: #0d1b2a;
-            color: white;
+            background: #0f172a;
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,339 +23,341 @@
             overflow: hidden;
         }
 
-        .game-container {
-            width: 100%;
-            max-width: 450px;
-            height: 650px;
-            background: linear-gradient(180deg, #87ceeb 0%, #1e3c72 30%, #001845 100%);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        .game-wrapper {
             position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            max-height: 800px;
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 35%, #0369a1 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             overflow: hidden;
-            border: 4px solid #415a77;
-            display: flex;
-            flex-direction: column;
+            border: 4px solid #0284c7;
+        }
+
+        /* Напис Calm Drink */
+        .brand-header {
+            position: absolute;
+            top: 15px;
+            width: 100%;
+            text-align: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .brand-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #fef08a;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.4), 0 0 15px rgba(254, 240, 138, 0.6);
+            text-transform: uppercase;
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            color: #e0f2fe;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* Статистика */
+        .score-board {
+            position: absolute;
+            top: 75px;
+            left: 15px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 10;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
             cursor: pointer;
         }
 
-        /* Табло */
-        .scoreboard {
+        /* Підказка */
+        .instructions {
             position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(13, 27, 42, 0.85);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border: 2px solid #778da9;
-            z-index: 10;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Човен і вудка */
-        .boat-wrapper {
-            position: absolute;
-            top: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 5;
-        }
-
-        .boat {
-            font-size: 3rem;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-        }
-
-        /* Леска та гачок */
-        .fishing-line {
-            position: absolute;
-            top: 125px;
-            left: 50%;
-            width: 2px;
-            background: rgba(255, 255, 255, 0.8);
-            height: 0px;
-            transform: translateX(-50%);
-            z-index: 4;
-            transition: height 0.05s linear;
-        }
-
-        .hook {
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.4rem;
-            line-height: 1;
-        }
-
-        /* Вода та бульбашки */
-        .water-line {
-            position: absolute;
-            top: 140px;
+            bottom: 15px;
             width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        }
-
-        /* Банка Calm Drink */
-        .can {
-            position: absolute;
-            width: 32px;
-            height: 60px;
-            border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-            font-size: 0.55rem;
-            font-weight: bold;
-            color: #000;
             text-align: center;
-            padding: 2px;
-            transition: left 0.05s linear;
-        }
-
-        .can::before {
-            content: '';
-            position: absolute;
-            top: -3px;
-            width: 24px;
-            height: 3px;
-            background: #d1d5db;
-            border-radius: 2px 2px 0 0;
-        }
-
-        /* Смаки банок */
-        .can-mango {
-            background: linear-gradient(180deg, #fff7ad 0%, #ffd000 100%);
-        }
-        .can-cola {
-            background: #111111;
-            color: #ffffff;
-            border-color: #444;
-        }
-        .can-bergamot {
-            background: linear-gradient(180deg, #fce4ec 0%, #f48fb1 100%);
-        }
-        .can-orange {
-            background: linear-gradient(180deg, #ffe0b2 0%, #ff9800 100%);
-        }
-
-        .can-label {
-            writing-mode: vertical-rl;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.5rem;
-        }
-
-        /* Екран Перемоги */
-        .win-card {
-            display: none;
-            position: absolute;
-            inset: 0;
-            background: rgba(13, 27, 42, 0.95);
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 25px;
-            text-align: center;
-            z-index: 20;
-            animation: fadeIn 0.4s ease-in-out forwards;
-        }
-
-        .win-card h2 {
-            font-size: 2rem;
-            color: #ffb703;
-            margin-bottom: 10px;
-        }
-
-        .win-card p {
-            font-size: 1.05rem;
-            margin-bottom: 25px;
-            line-height: 1.4;
-            color: #e0e1dd;
-        }
-
-        .buy-btn {
-            background: linear-gradient(135deg, #ffb703, #fb8500);
-            color: #023047;
-            padding: 14px 24px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 30px;
-            text-decoration: none;
-            box-shadow: 0 5px 15px rgba(251, 133, 0, 0.4);
-            transition: transform 0.2s, background 0.2s;
-        }
-
-        .buy-btn:hover {
-            transform: scale(1.05);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            font-size: 0.85rem;
+            color: #bae6fd;
+            pointer-events: none;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 
-    <div class="game-container" id="gameArea">
-        <div class="scoreboard">Виловлено Calm Drink: <span id="score">0</span> / 4 🥤</div>
-
-        <div class="water-line"></div>
-
-        <div class="boat-wrapper">
-            <div class="boat">🚣‍♂️</div>
+    <div class="game-wrapper">
+        <div class="brand-header">
+            <div class="brand-title">Calm Drink</div>
+            <div class="brand-subtitle">Крафтова Риболовля 🌊</div>
         </div>
 
-        <div class="fishing-line" id="line">
-            <div class="hook">🪝</div>
+        <div class="score-board">
+            Спіймано напоїв: <span id="score">0</span> 🥫
         </div>
 
-        <div class="win-card" id="winCard">
-            <h2>ЧУДОВИЙ УЛОВ! 🧘‍♂️🥤</h2>
-            <p>Ти виловив усі 4 смаки релаксуючого Calm Drink! Час відчути дззен та спробувати серію Wellness:</p>
-            <a href="https://underwood.beer/product/calm-taster-box/" target="_blank" class="buy-btn">Замовити Calm Drink 🛒</a>
-        </div>
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="instructions">Закидай вудку, щоб виловити баночки!</div>
     </div>
 
     <script>
-        const gameArea = document.getElementById('gameArea');
-        const line = document.getElementById('line');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score');
-        const winCard = document.getElementById('winCard');
 
-        const canTypes = [
-            { id: 'mango', name: 'Mango x Pineapple', class: 'can-mango' },
-            { id: 'cola', name: 'Cola', class: 'can-cola' },
-            { id: 'bergamot', name: 'Bergamot x Hibiscus', class: 'can-bergamot' },
-            { id: 'orange', name: 'Orange x Chili', class: 'can-orange' }
+        let width, height;
+        let score = 0;
+
+        // Налаштування розмірів
+        function resize() {
+            width = canvas.width = canvas.parentElement.clientWidth;
+            height = canvas.height = canvas.parentElement.clientHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Типи баночок / напоїв Calm Drink
+        const drinkTypes = [
+            { name: "Lager Can", color: "#f59e0b", label: "🍺", radius: 18 },
+            { name: "IPA Can", color: "#10b981", label: "🌿", radius: 18 },
+            { name: "Berry Bottle", color: "#ec4899", label: "🍓", radius: 16 },
+            { name: "Citrus Can", color: "#ef4444", label: "🍊", radius: 18 }
         ];
 
-        let activeCans = [];
-        let caughtCount = 0;
-        let isFishing = false;
-        let lineY = 0;
-        let fishingInterval = null;
-        let caughtCan = null;
+        // Масив баночок у воді
+        const drinks = [];
+        const maxDrinks = 6;
 
-        // Спавн банок під водою
-        function spawnCans() {
-            canTypes.forEach((type, index) => {
-                const can = document.createElement('div');
-                can.className = `can ${type.class}`;
-                can.innerHTML = `<span class="can-label">calm</span>`;
+        class FloatingDrink {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                const type = drinkTypes[Math.floor(Math.random() * drinkTypes.length)];
+                this.color = type.color;
+                this.label = type.label;
+                this.radius = type.radius;
                 
-                const depth = 220 + index * 95;
-                const speed = (Math.random() * 1.5 + 1) * (Math.random() < 0.5 ? 1 : -1);
-                const x = Math.random() * 320 + 20;
+                this.x = Math.random() * (width - 60) + 30;
+                this.y = Math.random() * (height - 350) + 200; // Положення у воді
+                
+                // Хаотична швидкість
+                this.vx = (Math.random() - 0.5) * 1.8;
+                this.vy = (Math.random() - 0.5) * 1.2;
+                
+                // Для плавного коливання
+                this.waveAngle = Math.random() * Math.PI * 2;
+                this.waveSpeed = 0.03 + Math.random() * 0.02;
+            }
 
-                can.style.top = `${depth}px`;
-                can.style.left = `${x}px`;
+            update() {
+                // Рух по хаотичній траєкторії
+                this.x += this.vx;
+                this.y += this.vy;
 
-                gameArea.appendChild(can);
+                // Легке хвилеподібне коливання
+                this.waveAngle += this.waveSpeed;
+                this.y += Math.sin(this.waveAngle) * 0.4;
 
-                activeCans.push({
-                    element: can,
-                    type: type,
-                    x: x,
-                    y: depth,
-                    speed: speed,
-                    caught: false
-                });
-            });
+                // Відштовхування від стінок
+                if (this.x - this.radius < 15 || this.x + this.radius > width - 15) {
+                    this.vx *= -1;
+                }
+                if (this.y - this.radius < 180 || this.y + this.radius > height - 40) {
+                    this.vy *= -1;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+
+                // Тінь під баночкою на воді
+                ctx.beginPath();
+                ctx.ellipse(0, this.radius + 2, this.radius * 0.9, 6, 0, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(2, 132, 199, 0.4)";
+                ctx.fill();
+
+                // Корпус баночки
+                ctx.beginPath();
+                ctx.roundRect(-this.radius * 0.7, -this.radius, this.radius * 1.4, this.radius * 2, 6);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "#ffffff";
+                ctx.stroke();
+
+                // Блік світла
+                ctx.beginPath();
+                ctx.rect(-this.radius * 0.5, -this.radius + 3, 3, this.radius * 1.6);
+                ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                ctx.fill();
+
+                // Іконка напою
+                ctx.font = "12px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(this.label, 0, 0);
+
+                ctx.restore();
+            }
         }
 
-        // Анімація руху банок вліво-вправо
-        function updateCans() {
-            activeCans.forEach(can => {
-                if (!can.caught) {
-                    can.x += can.speed;
-                    if (can.x <= 10 || can.x >= 390) {
-                        can.speed *= -1;
-                    }
-                    can.element.style.left = `${can.x}px`;
-                } else if (caughtCan === can) {
-                    // Якщо банка на гачку — вона слідує за гачком
-                    can.element.style.top = `${125 + lineY}px`;
-                    can.element.style.left = `calc(50% - 16px)`;
-                }
-            });
+        // Спавн початкових баночок
+        for (let i = 0; i < maxDrinks; i++) {
+            drinks.push(new FloatingDrink());
         }
 
-        setInterval(updateCans, 30);
+        // Вудка та волосінь
+        const rod = {
+            x: width / 2,
+            y: 50,
+            hookX: width / 2,
+            hookY: 120,
+            targetX: width / 2,
+            targetY: 120,
+            isCasting: false,
+            speed: 8
+        };
 
-        // Клік для опускання вудки
-        gameArea.addEventListener('click', (e) => {
-            if (isFishing || caughtCount >= 4) return;
-            if (e.target.closest('#winCard')) return;
+        // Обробка кліку для закидання
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
 
-            isFishing = true;
-            lineY = 0;
-            caughtCan = null;
-
-            // Опускання гачка
-            fishingInterval = setInterval(() => {
-                lineY += 6;
-                line.style.height = `${lineY}px`;
-
-                const hookY = 125 + lineY;
-
-                // Перевірка зіткнення з банкою
-                if (!caughtCan) {
-                    activeCans.forEach(can => {
-                        if (!can.caught && Math.abs(can.y - hookY) < 20 && Math.abs((can.x + 16) - 225) < 30) {
-                            can.caught = true;
-                            caughtCan = can;
-                        }
-                    });
-                }
-
-                // Досягли дна або спіймати банку — тягнемо назад
-                if (lineY >= 480 || caughtCan) {
-                    clearInterval(fishingInterval);
-                    retractHook();
-                }
-            }, 20);
+            // Закидаємо лише якщо клік у воду
+            if (clickY > 150) {
+                rod.targetX = clickX;
+                rod.targetY = clickY;
+                rod.isCasting = true;
+            }
         });
 
-        // Підйому гачка вгору
-        function retractHook() {
-            fishingInterval = setInterval(() => {
-                lineY -= 8;
-                line.style.height = `${lineY}px`;
+        // Головний ігровий цикл
+        function gameLoop() {
+            ctx.clearRect(0, 0, width, height);
 
-                if (lineY <= 0) {
-                    clearInterval(fishingInterval);
-                    lineY = 0;
-                    line.style.height = '0px';
-                    isFishing = false;
+            // Малювання водяних хвиль / фону
+            drawWaterWaves();
 
-                    if (caughtCan) {
-                        gameArea.removeChild(caughtCan.element);
-                        activeCans = activeCans.filter(c => c !== caughtCan);
-                        caughtCan = null;
-                        caughtCount++;
-                        scoreEl.innerText = caughtCount;
+            // Оновлення та малювання баночок
+            drinks.forEach(drink => {
+                drink.update();
+                drink.draw();
+            });
 
-                        if (caughtCount >= 4) {
-                            setTimeout(() => {
-                                winCard.style.display = 'flex';
-                            }, 500);
-                        }
-                    }
-                }
-            }, 20);
+            // Оновлення вудки
+            updateHook();
+
+            // Малювання волосіні та гачка
+            drawFishingRod();
+
+            requestAnimationFrame(gameLoop);
         }
 
-        spawnCans();
+        let waveOffset = 0;
+        function drawWaterWaves() {
+            waveOffset += 0.03;
+            ctx.fillStyle = "rgba(255, 255, 255, 0.08)";
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, 180 + i * 180);
+                for (let x = 0; x <= width; x += 20) {
+                    ctx.lineTo(x, 180 + i * 180 + Math.sin(x * 0.02 + waveOffset + i) * 6);
+                }
+                ctx.lineTo(width, height);
+                ctx.lineTo(0, height);
+                ctx.fill();
+            }
+        }
+
+        function updateHook() {
+            if (rod.isCasting) {
+                const dx = rod.targetX - rod.hookX;
+                const dy = rod.targetY - rod.hookY;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist > rod.speed) {
+                    rod.hookX += (dx / dist) * rod.speed;
+                    rod.hookY += (dy / dist) * rod.speed;
+                } else {
+                    rod.hookX = rod.targetX;
+                    rod.hookY = rod.targetY;
+
+                    // Перевірка на ловлю баночки
+                    checkCatch();
+
+                    // Повернення гачка
+                    setTimeout(() => {
+                        rod.targetX = width / 2;
+                        rod.targetY = 120;
+                        rod.isCasting = false;
+                    }, 300);
+                }
+            } else {
+                // Плавне повернення гачка до початкового стану
+                rod.hookX += (width / 2 - rod.hookX) * 0.1;
+                rod.hookY += (120 - rod.hookY) * 0.1;
+            }
+        }
+
+        function checkCatch() {
+            for (let i = 0; i < drinks.length; i++) {
+                const drink = drinks[i];
+                const dist = Math.hypot(rod.hookX - drink.x, rod.hookY - drink.y);
+
+                if (dist < drink.radius + 15) {
+                    // Спіймано!
+                    score++;
+                    scoreEl.innerText = score;
+
+                    // Респавн баночки
+                    drink.reset();
+                    break;
+                }
+            }
+        }
+
+        function drawFishingRod() {
+            // Волосінь
+            ctx.beginPath();
+            ctx.moveTo(width / 2, 40);
+            ctx.lineTo(rod.hookX, rod.hookY);
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Гачок
+            ctx.save();
+            ctx.translate(rod.hookX, rod.hookY);
+            ctx.beginPath();
+            ctx.arc(0, 0, 5, 0, Math.PI);
+            ctx.strokeStyle = "#e2e8f0";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Запуск
+        gameLoop();
     </script>
 </body>
 </html>
